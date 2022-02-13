@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: webserver
+  template:
+    metadata:
+      labels:
+        name: webserver
+        app: phonebookweb
+    spec:
+      containers: 
+        - image: clarusway/todo
+          imagePullPolicy: Always
+          name: webserver
+          ports: 
+            - containerPort: 80
+          env:
+            - name: "DBHOST"
+              value: db-service
