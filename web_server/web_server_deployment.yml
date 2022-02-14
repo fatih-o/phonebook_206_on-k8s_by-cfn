@@ -14,11 +14,26 @@ spec:
         app: phonebookweb
     spec:
       containers: 
-        - image: clarusway/todo
-          imagePullPolicy: Always
+        image: pehlivan/mysql-phonebook
+          imagePullPolicy: Never
           name: webserver
           ports: 
             - containerPort: 80
           env:
-            - name: "DBHOST"
-              value: db-service
+            - name: "MYSQL_DATABASE_HOST"
+              value: mysql-db-service
+            - name: "MYSQL_DATABASE"
+              valueFrom: 
+                configMapKeyRef: 
+                  key: mysql-database
+                  name: db 
+            - name: "MYSQL_USER"
+              valueFrom: 
+                secretKeyRef: 
+                  key: username
+                  name: mysql-secret
+            - name: "MYSQL_PASSWORD"
+              valueFrom: 
+                secretKeyRef: 
+                  key: password
+                  name: mysql-secret           
