@@ -1,0 +1,6 @@
+git clone https://github.com/salihpehlivan/phonebook_206_on-k8s_by-cfn.git
+mv phonebook_206_on-k8s_by-cfn/* . 
+kubectl apply -f configmap/
+kubectl apply -f database/
+docker build -f web_server/Dockerfile -t "pehlivan/mysql-phonebook:latest" .
+docker push pehlivan/mysql-phonebook

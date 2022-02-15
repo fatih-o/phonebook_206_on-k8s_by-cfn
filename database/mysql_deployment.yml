@@ -1,78 +1,65 @@
 apiVersion: apps/v1
 kind: Deployment
-metadata: 
-  labels: 
-    app: phonebook
-  name: mysql-db-deployment
-spec: 
+metadata:
+  name: mysql
+  labels:
+    app: db
+spec:
   replicas: 1
-  selector: 
-    matchLabels: 
-      app: phonebook
-      tier: mysql
-  strategy: 
-    type: Recreate
-  template: 
-    metadata: 
-      labels: 
-        app: phonebook
-        tier: mysql
-    spec: 
-      containers: 
-        - 
-          env: 
-            - 
-              name: MYSQL_DATABASE
-              valueFrom: 
-                configMapKeyRef: 
-                  key: mysql-database
-                  name: db
-            - 
-              name: MYSQL_ROOT_PASSWORD
-              valueFrom: 
-                secretKeyRef: 
-                  key: rootpassword
-                  name: mysql-secret
-            - 
-              name: MYSQL_USER
-              valueFrom: 
-                secretKeyRef: 
-                  key: username
-                  name: mysql-secret
-            - 
-              name: MYSQL_PASSWORD
-              valueFrom: 
-                secretKeyRef: 
-                  key: password
-                  name: mysql-secret
-          image: "mysql:5.7"
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+        - image: "mysql:5.7"
           name: mysql
-          ports: 
-            - 
-              containerPort: 3306
+          env:
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: db
+                  key: mysql-database
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: rootpassword
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: username
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: password
+          ports:
+            - containerPort: 3306
               name: mysql
-          volumeMounts: 
-            - 
-              mountPath: /var/lib/mysql
+          volumeMounts:
+            - mountPath: /var/lib/mysql
               name: mysql-persistent-storage
-      volumes: 
-        - 
-          name: mysql-persistent-storage
-          persistentVolumeClaim: 
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
             claimName: database-persistent-volume-claim
---- 
+---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql-db-service
+  name: mysql
   labels:
-    name: mysql
-    app: phonebook
+    name: db
 spec:
   selector:
-    name: mysql
+    name: db
   type: ClusterIP
   ports:
-    - name: db
+    - name: mysql
       port: 3306
-      targetPort: 3306
+      protocol: TCP
