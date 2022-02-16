@@ -14,3 +14,6 @@ kubectl apply -f result_server/
 
 ##### login to the MSQL server
 kubectl exec --stdin --tty mysql-6757998657-x7f7d -c mysql -- /bin/bash
+
+##### login to the Web servers
+kubectl exec --stdin --tty result-deployment-77bc78dd74-998wn -- sh
