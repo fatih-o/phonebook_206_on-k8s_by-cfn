@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: db
 data:
-  mysql-database: phonebook-db
+  mysql-database: phonebook
