@@ -2,5 +2,15 @@ git clone https://github.com/salihpehlivan/phonebook_206_on-k8s_by-cfn.git
 mv phonebook_206_on-k8s_by-cfn/* . 
 kubectl apply -f configmap/
 kubectl apply -f database/
+kubectl run -it --rm --image=mysql --restart=Never mysql-client -- mysql --host mysql --password=<your_password>
+docker login
 docker build -f web_server/Dockerfile -t "pehlivan/mysql-phonebook:latest" .
 docker push pehlivan/mysql-phonebook
+docker build -f result_server/Dockerfile -t "pehlivan/result-phonebook:latest" .
+docker push pehlivan/result-phonebook
+kubectl apply -f web_server/
+kubectl apply -f result_server/
+
+
+##### login to the MSQL server
+kubectl exec --stdin --tty mysql-6757998657-x7f7d -c mysql -- /bin/bash
